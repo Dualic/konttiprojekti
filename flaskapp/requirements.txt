@@ -6,4 +6,3 @@ MarkupSafe==2.0.1
 pygame==2.0.1
 Werkzeug==2.0.1
 psycopg2
-configparser

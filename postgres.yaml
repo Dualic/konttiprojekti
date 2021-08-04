@@ -76,6 +76,7 @@ metadata:
   name: postgres
   labels:
     app: postgres
+    app: "kontti-flask"
 spec:
   type: LoadBalancer
   ports:
