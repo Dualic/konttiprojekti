@@ -73,11 +73,69 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: flask-python-service
+  labels:
+    app: "flask-python"
+spec:
+  type: LoadBalancer
+  ports:
+   - port: 80
+  selector:
+   app: "flask-python"
+---
+
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "flask-python"
+  namespace: "default"
+  labels:
+    app: "flask-python"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "flask-python"
+  template:
+    metadata:
+      labels:
+        app: "flask-python"
+    spec:
+      containers:
+      - name: "flaskapp-1"
+        image: "gcr.io/group2-320408/flaskapp:latest"
+---
+
+apiVersion: "autoscaling/v2beta1"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "flask-python-hpa-t30t"
+  namespace: "default"
+  labels:
+    app: "flask-python"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "flask-python"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      targetAverageUtilization: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: postgres
   labels:
     app: postgres
 spec:
   type: LoadBalancer
+  loadBalancerIP: 35.228.26.155
   ports:
    - port: 5432
   selector:
