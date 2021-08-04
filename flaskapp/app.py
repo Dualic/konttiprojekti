@@ -1,30 +1,52 @@
-import sqlite3
+
 from flask import Flask, render_template, request, url_for, flash, redirect
 from werkzeug.exceptions import abort
 from datetime import datetime
-from init_db import do_init
+import psycopg2
+from configparser import ConfigParser
+
+
+def config(filename='database.ini', section='postgresql'):
+    parser = ConfigParser()
+    parser.read(filename)
+    db = {}
+    
+    if parser.has_section(section):
+        params = parser.items(section)
+        for param in params:
+            db[param[0]] = param[1]
+    else:
+        raise Exception('Section {0} not found in the {1} file'.format(section, filename))
+
+    return db
+
+
 
 
 def get_db_connection():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row
+    
+    conn = psycopg2.connect(**config())
+    
     return conn
+    
 
-#
-
-
-def get_post(post_id):
+def get_post(cursor, post_id):
     conn = get_db_connection()
-    post = conn.execute('SELECT * FROM posts WHERE id = ?',
-                        (post_id,)).fetchone()
+    cursor = conn.cursor()  
+    SQL = 'SELECT * FROM posts WHERE id = %s;'
+    cursor.execute(SQL, (post_id,))
+    post = cursor.fetchone()
     conn.close()
     if post is None:
         abort(404)
     return post
 
 
+
+
 app = Flask(__name__)
-do_init()
+
+
 app.config['SECRET_KEY'] = 'do_not_touch_or_you_will_be_fired'
 
 
@@ -40,7 +62,9 @@ def format_date(post_date):
 @app.route('/')
 def index():
     conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM posts').fetchall()
+    cursor = conn.cursor()  
+    cursor.execute('SELECT * FROM posts;')
+    posts = cursor.fetchall()
     conn.close()
     # we need to iterate over all posts and format their date accordingly
     dictrows = [dict(row) for row in posts]
@@ -69,7 +93,8 @@ def create():
             flash('Title is required!')
         else:
             conn = get_db_connection()
-            conn.execute('INSERT INTO posts (title, content) VALUES (?, ?)',
+            cursor = conn.cursor() 
+            cursor.execute('INSERT INTO posts (title, content) VALUES (%s, %s);',
                          (title, content))
             conn.commit()
             conn.close()
@@ -90,8 +115,8 @@ def edit(id):
             flash('Title is required!')
         else:
             conn = get_db_connection()
-            conn.execute('UPDATE posts SET title = ?, content = ?'
-                         ' WHERE id = ?',
+            cursor = conn.cursor() 
+            cursor.execute('UPDATE posts SET title = %s, content = %s WHERE id = %s;',
                          (title, content, id))
             conn.commit()
             conn.close()
@@ -104,8 +129,10 @@ def edit(id):
 @app.route('/<int:id>/delete', methods=('POST',))
 def delete(id):
     post = get_post(id)
+
     conn = get_db_connection()
-    conn.execute(f'DELETE FROM posts WHERE id = {id}')
+    cursor = conn.cursor() 
+    cursor.execute('DELETE FROM posts WHERE id = %s;', (id,))
     conn.commit()
     conn.close()
     flash('"{}" was successfully deleted!'.format(post['title']))
