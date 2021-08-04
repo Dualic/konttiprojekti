@@ -18,3 +18,4 @@ INSERT INTO posts (title, content) VALUES ('Kaiken takana on koodi – ja sen vo
 Tietokoneet ja niiden käyttämä kieli on muuttanut maailmaamme käsittämättömän paljon kohtuullisen pienessä ajassa. Jos kuka tahansa saisi kyydin aikakoneella 30 vuoden takaa nykypäivään, jäisi aikamatkustajan suu taatusti auki monessa arkisessa kohtaamisessa 2019-luvun alkuasukkaan kanssa.
 Koodi on yksi käytetyimmistä ja arkemme kannalta vaikuttavimmista kielistä. Sen osaamisesta on pelkästään hyötyä ja sen osaajille on työmarkkinoilla jatkuvaa tilausta.
 Academyn 12 viikon ja vakituisen työpaikan Academic Workin asiakasyrityksen palveluksessa takaavan koodauskoulutusohjelman opettaja Tommi Teräsvirta Sovellolta osaa avata tämän kiehtovan kielen sekä sen oppimisen saloja syvemmin.""");
+psql -h 35.228.26.155 -U postgresadmin --password -p 5432 postgresdb

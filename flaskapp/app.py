@@ -122,7 +122,7 @@ def edit(id):
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
-
+    post = tuple_to_dict(post)
     return render_template('edit.html', post=post)
 
 
@@ -130,11 +130,12 @@ def edit(id):
 @app.route('/<int:id>/delete', methods=('POST',))
 def delete(id):
     post = get_post(id)
-
+    
     conn = get_db_connection()
     cursor = conn.cursor() 
     cursor.execute('DELETE FROM posts WHERE id = %s;', (id,))
     conn.commit()
     conn.close()
+    post = tuple_to_dict(post)
     flash('"{}" was successfully deleted!'.format(post['title']))
     return redirect(url_for('index'))
