@@ -30,7 +30,7 @@ def get_db_connection():
     return conn
     
 
-def get_post(cursor, post_id):
+def get_post(post_id):
     conn = get_db_connection()
     cursor = conn.cursor()  
     SQL = 'SELECT * FROM posts WHERE id = %s;'
@@ -58,27 +58,28 @@ def format_date(post_date):
     return newdate.strftime('%d.%m.%Y') + ' klo ' + newdate.strftime('%H:%M')
 
 
+def tuple_to_dict(post):
+    return {'id': post[0], 'created': post[1], 'title': post[2], 'content': post[3]}
+
 # this index() gets executed on the front page where all the posts are
 @app.route('/')
 def index():
     conn = get_db_connection()
     cursor = conn.cursor()  
     cursor.execute('SELECT * FROM posts;')
-    posts = cursor.fetchall()
+    posts = cursor.fetchall() 
     conn.close()
-    # we need to iterate over all posts and format their date accordingly
-    dictrows = [dict(row) for row in posts]
-    for post in dictrows:
-        # using our custom format_date(...)
-        post['created'] = format_date(post['created'])
+    dictrows = []
+    for post in posts:
+        dictrows.append(tuple_to_dict(post))
+        
     return render_template('index.html', posts=dictrows)
 
 
 # here we get a single post and return it to the browser
 @app.route('/<int:post_id>')
 def post(post_id):
-    post = dict(get_post(post_id))
-    post['created'] = format_date(post['created'])
+    post = tuple_to_dict(get_post(post_id))
     return render_template('post.html', post=post)
 
 
