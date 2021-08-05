@@ -116,11 +116,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: postgres-cip
   labels:
     app: postgres
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
    - port: 5432
   selector:
