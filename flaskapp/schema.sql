@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS posts (
     title TEXT NOT NULL,
     content TEXT NOT NULL
 );
+
 INSERT INTO posts (title, content) VALUES ('Jämähditkö? Tee kuten Heidi ja muuta urasi suuntaa', 'Jokaisen maanantain ei tarvitse olla nousukiitoa, mutta jos perjantaihin mennessä ei sorvin ääressä ole juuri ilon tai innostumisen kokemuksia irronnut, ollaan lähellä jämähtämistä. Oireet on helppo tunnistaa ja hoito on jokaisen ulottuvilla – uranvaihto ei katso taustaa eikä vaadi vuosien opiskelua.');
 INSERT INTO posts (title, content) VALUES ('Tradenomista IT-ammattilaiseksi: Ilkan tarina', """Kansainvälisen kaupan tradenomiksi valmistunut ja useita vuosia työuraa LVI-alalla rakentanut Ilkka Jokela hyppäsi Academyn kiihdytyskaistalle saatuaan kipinän koodiin.
 “Olin jo päättänyt, että haluan koodata ja kouluttautua IT-alalle. Hain ja pääsinkin yliopistoon lukemaan tietotekniikkaa. Huomasin kuitenkin Academyn, joten en ottanut opiskelupaikkaa vastaan. Olen aina ollut kiinnostunut teknologiasta ja haluan tehdä jotain, mikä on tätä päivää”, Ilkka avaa omaa polkuaan.
