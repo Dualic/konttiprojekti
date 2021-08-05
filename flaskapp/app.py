@@ -122,7 +122,7 @@ def edit(id):
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
-
+    post = tuple_to_dict(post)
     return render_template('edit.html', post=post)
 
 
@@ -136,5 +136,6 @@ def delete(id):
     cursor.execute('DELETE FROM posts WHERE id = %s;', (id,))
     conn.commit()
     conn.close()
+    post = tuple_to_dict(post)
     flash('"{}" was successfully deleted!'.format(post['title']))
     return redirect(url_for('index'))
